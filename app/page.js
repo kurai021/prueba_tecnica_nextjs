@@ -1,95 +1,104 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client"
+
+import React, { useState } from 'react';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import FormControl from "@mui/material/FormControl"
+import InputLabel from '@mui/material/InputLabel';
+import Select from '@mui/material/Select';
+import MenuItem from '@mui/material/MenuItem';
 
 export default function Home() {
+  const [nombreCliente, setNombreCliente] = useState('');
+  const [nombreProyecto, setNombreProyecto] = useState('');
+  const [ubicacion, setUbicacion] = useState('');
+  const [estatusProyecto, setEstatusProyecto] = useState('');
+
+  const handleChange = (event) => {
+    setEstatusProyecto(event.target.value);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    // Aquí realizarás el POST a la API para agregar el nuevo proyecto
+    const response = await fetch('/api/proyecto', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        nombreCliente: nombreCliente,
+        nombreProyecto: nombreProyecto,
+        ubicacion: ubicacion,
+        estatusProyecto: estatusProyecto,
+      }),
+    });
+
+    if (response.ok) {
+      // Proyecto creado exitosamente, puedes mostrar un mensaje o redireccionar a otra página
+      console.log('Proyecto creado exitosamente!');
+    } else {
+      console.error('Error al crear el proyecto');
+    }
+  };
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
+    <main>
+      <Container>
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+
+          <FormControl fullWidth>
+            <TextField
+              label="Nombre del cliente"
+              variant="outlined"
+              value={nombreCliente}
+              onChange={(e) => setNombreCliente(e.target.value)}
             />
-          </a>
-        </div>
-      </div>
+          </FormControl>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
+          <FormControl fullWidth>
+            <TextField
+              label="Nombre del proyecto"
+              variant="outlined"
+              value={nombreProyecto}
+              onChange={(e) => setNombreProyecto(e.target.value)}
+            />
+          </FormControl>
 
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+          <FormControl fullWidth>
+            <TextField
+              label="Ubicación"
+              variant="outlined"
+              value={ubicacion}
+              onChange={(e) => setUbicacion(e.target.value)}
+            />
+          </FormControl>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
+          <FormControl fullWidth>
+            <InputLabel id="estatus-proyecto-label">Estatus del Proyecto</InputLabel>
+            <Select
+              labelId="estatus-proyecto-label"
+              id="estatus-proyecto"
+              variant="outlined"
+              value={estatusProyecto}
+              label="Estatus del Proyecto"
+              onChange={handleChange}
+            >
+              <MenuItem value="EN CURSO">EN CURSO</MenuItem>
+              <MenuItem value="STAND BY">STAND BY</MenuItem>
+              <MenuItem value="TERMINADO">TERMINADO</MenuItem>
+            </Select>
+          </FormControl>
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+          <Button type="submit" variant="contained" sx={{ mt: 2 }}>
+            Crear Proyecto
+          </Button>
+        </Box>
+      </Container>
     </main>
-  )
+  );
 }
